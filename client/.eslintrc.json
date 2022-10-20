@@ -18,7 +18,8 @@
     "react/react-in-jsx-scope": "off",
     "react/function-component-definition": "off",
     "import/no-absolute-path": "off",
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "jsx-a11y/label-has-associated-control": "off"
   },
   "settings": {
     "import/resolver": {

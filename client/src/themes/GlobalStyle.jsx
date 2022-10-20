@@ -25,6 +25,9 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   :root {
@@ -42,10 +45,17 @@ const GlobalStyle = createGlobalStyle`
     background: rgb(var(--color-background));
   }
 
-  button {
+  input, button {
+    color: rgb(var(--color-text));
     background: transparent;
     border: none;
     border-radius: 2px;
+
+    outline: none;
+  }
+
+  button {
+    cursor: pointer;
   }
 `;
 
