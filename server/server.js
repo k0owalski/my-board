@@ -1,23 +1,31 @@
+const express = require('express');
+const cors = require('cors'); // needed if using localhost
+const mongoose = require('mongoose');
+
 require('dotenv').config();
 
-const express = require('express');
 const app = express();
 
+const authRoutes = require('./routes/auth');
+
+// middlewares
+app.use(cors()); // needed if using localhost
+app.use(express.json());
+
 app.use((req, res, next) => {
-	console.log(req.path, req.method);
+	console.log(req.path, req.method, req.body);
 	next();
 });
 
-app.get('/api/users/:id', (req, res) => {
-	const user = {
-		username: 'Konrad Kowalik',
-		boards: ['A82AJ39J', 'J16K423S'],
-		settings: {
-			theme: 'light',
-		},
-	};
+// routing
+app.use('/api/auth', authRoutes);
 
-	res.json(user);
-});
-
-app.listen(process.env.PORT);
+// db connect
+mongoose
+	.connect(process.env.MONGODB_URI)
+	.then(() => {
+		app.listen(process.env.PORT, () =>
+			console.log('DB connected. Listening on port 3072...')
+		);
+	})
+	.catch((error) => console.log("DB hasn't connected ==> ", error.message));
