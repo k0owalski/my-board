@@ -8,9 +8,13 @@ const { validateSignIn, validateSignUp } = require('../utils/validatation');
 // authenticate
 const authenticate = (req, res) => {
 	const { token } = req.body;
-	console.log(token);
 
-	res.json({ success: true, authenticated: true });
+	if (!token || token === 'null') {
+		res.json({ success: false });
+		return;
+	}
+
+	res.json({ success: true });
 };
 
 // sign-in
