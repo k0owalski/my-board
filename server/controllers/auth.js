@@ -1,9 +1,5 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
 const User = require('../models/user');
-
-const { validateSignIn, validateSignUp } = require('../utils/validatation');
+const createAccessToken = require('../utils/createAccessToken');
 
 // authenticate
 const authenticate = (req, res) => {
@@ -21,77 +17,29 @@ const authenticate = (req, res) => {
 const signIn = async (req, res) => {
 	const { email, password } = req.body;
 
-	const { isValid, errors } = validateSignIn(email, password);
+	try {
+		const user = await User.signin(email, password);
 
-	if (!isValid) {
-		res.json({ success: false, errors });
-		return;
+		const token = createAccessToken(user._id);
+
+		res.status(200).json({ token });
+	} catch (error) {
+		res.status(400).json({ error });
 	}
-
-	const userdata = await User.findOne({ email });
-
-	if (!userdata) {
-		errors.push('Invalid e-mail or password.');
-
-		res.json({ success: false, errors });
-		return;
-	}
-
-	const isPasswordValid = await bcrypt.compare(password, userdata.password);
-
-	if (!isPasswordValid) {
-		errors.push('Invalid e-mail or password.');
-
-		res.json({ success: false, errors });
-		return;
-	}
-
-	res.json({
-		success: true,
-		token: null,
-		refresh: null,
-	});
 };
 
 // sign-up
 const signUp = async (req, res) => {
-	const { email, password, passwordRepeated, username } = req.body;
-
-	const { isValid, errors } = validateSignUp(email, password, passwordRepeated);
-
-	if (!isValid) {
-		res.json({ success: false, errors });
-		return;
-	}
-
-	const existingUser = await User.findOne({ email });
-
-	if (existingUser) {
-		errors.push(
-			'There is already an account assaigned to this e-mail address.'
-		);
-
-		res.json({ success: false, errors });
-		return;
-	}
+	const { email, password, repeatPassword } = req.body;
 
 	try {
-		const user = await User.create({
-			email,
-			password: bcrypt.hashSync(password),
-			username,
-		});
+		const user = await User.signup(email, password, repeatPassword);
 
-		// const token = jwt.sign(
-		// 	{ id: user._id, email: user.email },
-		// 	process.env.ACCESS_TOKEN_SECRET
-		// );
+		const token = createAccessToken(user._id);
 
-		res.json({ success: true, token: null, refresh: null });
-	} catch {
-		errors.push('An error occured while creating new user.');
-
-		res.json({ success: false, errors });
+		res.status(200).json({ token });
+	} catch (error) {
+		res.status(400).json({ error });
 	}
 };
 
