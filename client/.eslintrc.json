@@ -19,7 +19,9 @@
     "react/function-component-definition": "off",
     "import/no-absolute-path": "off",
     "import/extensions": "off",
-    "jsx-a11y/label-has-associated-control": "off"
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "no-plusplus": "off"
   },
   "settings": {
     "import/resolver": {
