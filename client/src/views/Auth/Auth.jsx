@@ -1,9 +1,24 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+
+import useAuth from 'utils/useAuth';
 
 const Auth = () => {
-  const lctn = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  return <Navigate to="/sign-in" state={{ from: lctn }} replace />;
+  useEffect(() => {
+    const auth = async () => {
+      const isAuth = await useAuth();
+
+      if (!isAuth)
+        navigate('/sign-in', { replace: true, state: { from: location } });
+    };
+
+    auth();
+  }, []);
+
+  return <Outlet />;
 };
 
 export default Auth;
