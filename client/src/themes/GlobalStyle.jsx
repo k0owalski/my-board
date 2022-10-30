@@ -38,7 +38,15 @@ const GlobalStyle = createGlobalStyle`
     --color-accept: 26, 203, 97;
   }
 
+  html {
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: rgba(var(--color-text), .08); }
+    &::-webkit-scrollbar-thumb { background: rgb(var(--color-primary)); }
+  }
+
   body {
+    width: 100%;
+
     font-family: 'Montserrat';
 
     color: rgb(var(--color-text));
