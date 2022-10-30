@@ -1,17 +1,18 @@
-import { useRef, useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import Input from 'components/atoms/Input/Input';
 
-import useLogin from 'utils/useLogin';
-import { validateEmail, validatePassword } from 'utils/useValidation';
+import useSignIn from 'utils/useSignIn';
+import useValidation from 'utils/useValidation';
 
 import logo from 'assets/images/my-board-logo.svg';
 
 import StyledForm from './StyledSignInForm';
 
 const SignInForm = () => {
-  const [errors, setErrors] = useState(null);
+  const [error, setError] = useState({ field: null, message: null });
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -19,29 +20,40 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { validateEmail, validatePassword } = useValidation();
+
+  useEffect(() => {
+    emailRef.current.classList.remove('is-invalid');
+    passwordRef.current.classList.remove('is-invalid');
+
+    if (error.field === 'email') emailRef.current.classList.add('is-invalid');
+    else if (error.field === 'password')
+      passwordRef.current.classList.add('is-invalid');
+  }, [error]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (validateEmail(email) && validatePassword(password)) {
-      const response = await useLogin(email, password);
+    if (!validateEmail(email) || !validatePassword(password)) {
+      setError({ field: null, message: 'Invalid email or password.' });
+      return;
+    }
 
-      if (response.success) {
-        document.cookie = `token=${response.token};`;
-        localStorage.setItem('refresh', response.refresh);
+    const err = await useSignIn(email, password);
 
-        navigate('/', { replace: true, state: { from: location } });
-      } else setErrors(response.errors);
-    } else setErrors(['Invalid e-mail or password.']);
+    if (!err) {
+      navigate('/', { replace: true, state: { from: location } });
+    } else setError(err);
   };
 
   return (
     <StyledForm>
-      {errors?.map((error) => (
-        <div className="error is-active">{error}</div>
-      ))}
+      <div className={`error ${error.message ? 'is-active' : null}`}>
+        {error.message}
+      </div>
       <form className="form" onSubmit={handleSubmit}>
         <img className="logo" src={logo} alt="myBoard" />
 

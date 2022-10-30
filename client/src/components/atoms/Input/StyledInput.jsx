@@ -18,6 +18,10 @@ const StyledInput = styled.div`
 
     background: rgba(var(--color-text), 0.12);
     border-bottom: 1px solid rgb(var(--color-text));
+
+    &.is-invalid {
+      border-bottom: 1px solid rgb(var(--color-error));
+    }
   }
 `;
 
