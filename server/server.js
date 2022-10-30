@@ -1,6 +1,8 @@
 const express = require('express');
-const cors = require('cors'); // needed if using localhost
 const mongoose = require('mongoose');
+
+const cors = require('cors'); // needed if using localhost
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
@@ -9,8 +11,9 @@ const app = express();
 const authRoutes = require('./routes/auth');
 
 // middlewares
-app.use(cors()); // needed if using localhost
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' })); // needed if using localhost
 app.use(express.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
 	console.log(req.path, req.method, req.body);

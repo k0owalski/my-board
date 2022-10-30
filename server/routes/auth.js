@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();
 
-router.post('/', authenticate);
+router.get('/', authenticate);
 
 router.post('/sign-in', signIn);
 

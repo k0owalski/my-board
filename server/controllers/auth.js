@@ -1,16 +1,17 @@
 const User = require('../models/user');
 const createAccessToken = require('../utils/createAccessToken');
+const verifyToken = require('../utils/verifyToken');
 
 // authenticate
 const authenticate = (req, res) => {
-	const { token } = req.body;
+	const token = req.cookies?.token;
 
-	if (!token || token === 'null') {
-		res.json({ success: false });
-		return;
-	}
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
-	res.json({ success: true });
+	const user = User.findOne({ _id });
+
+	if (user) res.status(200).send();
+	else res.status(401).send();
 };
 
 // sign-in
@@ -20,9 +21,12 @@ const signIn = async (req, res) => {
 	try {
 		const user = await User.signin(email, password);
 
-		const token = createAccessToken(user._id);
+		const { token, refreshToken } = createAccessToken(user._id);
 
-		res.status(200).json({ token });
+		res
+			.status(200)
+			.cookie('token', token, { maxAge: 360000 * 24 * 2, httpOnly: true })
+			.json({ refreshToken });
 	} catch (error) {
 		res.status(400).json({ error });
 	}
@@ -35,9 +39,12 @@ const signUp = async (req, res) => {
 	try {
 		const user = await User.signup(email, password, repeatPassword);
 
-		const token = createAccessToken(user._id);
+		const { token, refreshToken } = createAccessToken(user._id);
 
-		res.status(200).json({ token });
+		res
+			.status(200)
+			.cookie('token', token, { maxAge: 360000 * 24 * 2, httpOnly: true })
+			.json({ refreshToken });
 	} catch (error) {
 		res.status(400).json({ error });
 	}
@@ -45,14 +52,22 @@ const signUp = async (req, res) => {
 
 // refresh
 const refreshToken = (req, res) => {
-	const { refresh } = req.body;
-	console.log(refresh);
+	const { refreshToken: refresh } = req.body;
 
-	res.json({
-		success: true,
-		token: 'f98j213jf1jj3ahsd9.1u92j3h92h13fh180h3f.jamdj8dha0hh12312h3g',
-		refresh: 'nv12yni3ho12h490.an7dvnayy2y1g31gjkgfh3y5.ay9vsyb8a7tf4y132',
-	});
+	const id = verifyToken(refresh, process.env.REFRESH_TOKEN_SECRET);
+
+	if (id) {
+		const { token, refreshToken } = createAccessToken(id);
+
+		res
+			.status(200)
+			.cookie('token', token, { maxAge: 360000 * 24 * 2, httpOnly: true })
+			.json({ refreshToken });
+
+		return;
+	}
+
+	res.status(400).send();
 };
 
 module.exports = {
