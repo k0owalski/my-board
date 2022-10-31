@@ -46,11 +46,14 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     width: 100%;
+    height: 100%;
 
     font-family: 'Montserrat';
 
     color: rgb(var(--color-text));
     background: rgb(var(--color-background));
+
+    overflow: hidden;
   }
 
   input, button {
