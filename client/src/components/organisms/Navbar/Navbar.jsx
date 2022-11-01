@@ -1,5 +1,11 @@
-import logoImg from 'assets/images/my-board-logo.svg';
+import IconButton from 'components/atoms/IconButton/IconButton';
+import ProfileButton from 'components/atoms/ProfileButton/ProfileButton';
 
+import logoImg from 'assets/images/my-board-logo.svg';
+import notificationIcon from 'assets/images/icon-notification.svg';
+import chatIcon from 'assets/images/icon-chat.svg';
+
+import Boards from 'components/molecules/Boards/Boards';
 import StyledNavbar from './StyledNavbar';
 
 const Navbar = () => (
@@ -15,23 +21,13 @@ const Navbar = () => (
     </div>
     <div className="board-list-wrapper">
       <div className="section-heading">Boards</div>
-      <ul className="board-list">
-        <li className="board-name">My first created board</li>
-        <li className="board-name">my second board</li>
-        <li className="board-name">And the third one</li>
-      </ul>
+      <Boards />
     </div>
     <div className="user-actions">
-      <div className="user-profile-button">
-        <span className="username">Username</span>
-      </div>
+      <ProfileButton username="Konrad" />
       <div className="notification-wrapper">
-        <button className="global-notifications notification" type="button">
-          <img src="" alt="" />
-        </button>
-        <button className="chat-notifications notification" type="button">
-          <img src="" alt="" />
-        </button>
+        <IconButton icon={notificationIcon} variant="notification" />
+        <IconButton icon={chatIcon} variant="notification" />
       </div>
     </div>
     <span className="copyright">
