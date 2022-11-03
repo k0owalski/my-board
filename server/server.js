@@ -9,6 +9,7 @@ require('dotenv').config();
 const app = express();
 
 const authRoutes = require('./routes/auth');
+const boardsRoutes = require('./routes/boards');
 
 // middlewares
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' })); // needed if using localhost
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 // routing
 app.use('/api/auth', authRoutes);
+app.use('/api/boards', boardsRoutes);
 
 // db connect
 mongoose
