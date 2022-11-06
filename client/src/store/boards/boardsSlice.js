@@ -1,22 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const API_GET_USER_DATA = 'http://localhost/api/user/me';
+const API_GET_BOARDS = 'http://localhost/api/board/';
 
-const name = 'user';
+const name = 'boards';
 
 const initialState = {
-  email: null, // string
-  username: null, // string
-  firstname: null, // string
-  lastname: null, // string
-  profileImage: null, // string
+  boards: null, // array of { id: number, name: string, code: string, createdBy: string(userID), createdAt: string(date) }
 };
 
 const createExtraActions = () => {
-  const getUserData = createAsyncThunk(`${name}/getUserData`, async () => {
+  const getBoards = createAsyncThunk('boards/getBoards', async () => {
     try {
-      const response = await fetch(API_GET_USER_DATA, {
+      const response = await fetch(API_GET_BOARDS, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -29,14 +25,14 @@ const createExtraActions = () => {
     }
   });
 
-  return { getUserData: getUserData() };
+  return { getBoards: getBoards() };
 };
 
 const extraActions = createExtraActions();
 
 const createExtraReducers = () => {
-  const getUserData = () => {
-    const { pending, fullfield, rejected } = extraActions.getUserData;
+  const getBoards = () => {
+    const { pending, fullfield, rejected } = extraActions.getBoards;
 
     return {
       [pending]: (state) => {
@@ -52,19 +48,19 @@ const createExtraReducers = () => {
   };
 
   return {
-    ...getUserData,
+    ...getBoards,
   };
 };
 
-const userSlice = createSlice({
+const boardsSlice = createSlice({
   name,
   initialState,
   extraReducers: createExtraReducers(),
 });
 
-export const { getUserData } = {
-  ...userSlice.actions,
+export const { getBoards } = {
+  ...boardsSlice.actions,
   ...extraActions,
 };
 
-export default userSlice.reducer;
+export default boardsSlice.reducer;
