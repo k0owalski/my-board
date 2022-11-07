@@ -1,9 +1,13 @@
 const User = require('../models/user');
 const Board = require('../models/board');
+const verifyToken = require('../utils/verifyToken');
 
 // get all boards for given user
 const getBoards = async (req, res) => {
-	const userId = req.body.userId;
+	const { _id: userId } = verifyToken(
+		req.cookies.token,
+		process.env.ACCESS_TOKEN_SECRET
+	);
 
 	if (!userId) {
 		res.status(400).send();
@@ -11,24 +15,28 @@ const getBoards = async (req, res) => {
 	}
 
 	try {
-		const boardIDs = await User.findById(userId).boards;
-		const boards = await Board.find({ _id: { $in: boardIDs } });
+		const boards = await Board.find({ 'users.id': userId });
 
 		if (boards?.length)
-			res
-				.status(200)
-				.json({
-					boards: boards.map((board) => ({ id: board.id, name: board.name })),
-				});
+			res.status(200).json({
+				boards: boards.map((board) => ({ id: board.id, name: board.name })),
+			});
 		else res.status(400).send();
-	} catch {
-		res.status(400).send();
+	} catch (err) {
+		res.status(400).json(err);
 	}
 };
 
 // create a new board
 const createBoard = async (req, res) => {
-	const { name, code, userId } = req.body;
+	const { name, code } = req.body;
+
+	const { _id: userId } = verifyToken(
+		req.cookies.token,
+		process.env.ACCESS_TOKEN_SECRET
+	);
+
+	console.log(userId);
 
 	if (!name || !code || !userId) {
 		res.status(400).send();
@@ -36,7 +44,13 @@ const createBoard = async (req, res) => {
 	}
 
 	try {
-		await Board.create({ name, code, users: [userId] });
+		await Board.create({
+			name,
+			code,
+			users: [{ id: userId, roles: ['Admin'] }],
+			tasks: [],
+			notes: [],
+		});
 
 		res.status(200).send();
 	} catch {
@@ -46,7 +60,12 @@ const createBoard = async (req, res) => {
 
 // join a board
 const joinBoard = async (req, res) => {
-	const { code, userId } = req.body;
+	const { code } = req.body;
+
+	const { _id: userId } = verifyToken(
+		req.cookies.token,
+		process.env.ACCESS_TOKEN_SECRET
+	);
 
 	if (!code || !userId) {
 		res.status(400).send();
@@ -56,7 +75,7 @@ const joinBoard = async (req, res) => {
 	try {
 		const board = await Board.findOneAndUpdate(
 			{ code },
-			{ $push: { users: userId } }
+			{ $push: { users: { id: userId, role: [] } } }
 		);
 
 		if (!board) {

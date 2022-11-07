@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 			unique: true,
+			match: /^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/,
 			trim: true,
 			lowercase: true,
 		},
@@ -19,14 +20,17 @@ const userSchema = new mongoose.Schema(
 		username: {
 			type: String,
 			trim: true,
+			match: /^[a-zA-Z0-9_]+$/,
 		},
 		firstname: {
 			type: String,
 			trim: true,
+			match: /^[a-zA-Z0-9_]+$/,
 		},
 		lastname: {
 			type: String,
 			trim: true,
+			match: /^[a-zA-Z0-9_]+$/,
 		},
 	},
 	{ timestamps: true }
