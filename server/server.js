@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const app = express();
 
-const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
 const boardsRoutes = require('./routes/boards');
 
 // middlewares
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 // routing
-app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/boards', boardsRoutes);
 
 // db connect
