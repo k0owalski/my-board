@@ -49,7 +49,7 @@ userSchema.statics.signup = async function (email, password, repeatPassword) {
 	if (!validate.arePasswordsDifferent(password, repeatPassword))
 		throw new validate.exception('repeatPassword', 'Passwords do not match.');
 
-	const exists = await this.findOne({ email });
+	const exists = await this.findOne({ email }, {});
 
 	if (exists) throw new validate.exception('email', 'Email is already in use.');
 
@@ -68,7 +68,7 @@ userSchema.statics.signin = async function (email, password) {
 	if (!validate.isEmail(email) || !validate.isPassword(password))
 		throw new validate.exception(null, 'Invalid email or password.');
 
-	const user = await this.findOne({ email });
+	const user = await this.findOne({ email }, {});
 
 	if (!user) throw new validate.exception(null, 'Invalid email or password.');
 

@@ -8,17 +8,22 @@ const getUserData = async (req, res) => {
 	const token = getAccessToken(req.headers.authorization);
 
 	if (!token)
-		return res
-			.status(401)
-			.json({ message: 'Authorization failed. No access token given.' });
+		return res.status(401).json({
+			success: false,
+			error: {
+				message: 'Authentication failed. No access token given.',
+			},
+		});
 
-	const { error, data } = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const { data } = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!data?._id)
 		return res.status(401).json({
-			error: error.message,
-			message:
-				'Authorization failed. Access token is invalid or it has expired.',
+			success: false,
+			error: {
+				message:
+					'Authentication failed. Access token is invalid or it has expired.',
+			},
 		});
 
 	const user = await User.findById(
@@ -27,9 +32,10 @@ const getUserData = async (req, res) => {
 	);
 
 	if (!user)
-		return res
-			.status(401)
-			.json({ message: 'Authorization failed. There is no such user.' });
+		return res.status(401).json({
+			success: false,
+			error: { message: 'Authentication failed. There is no such user.' },
+		});
 
 	return res.status(200).json(user);
 };
@@ -38,43 +44,44 @@ const authenticate = async (req, res) => {
 	const token = getAccessToken(req.headers.authorization);
 
 	if (!token)
-		return res
-			.status(401)
-			.json({ message: 'Authorization failed. No access token given.' });
+		return res.status(401).json({
+			success: false,
+			error: { message: 'Authentication failed. No access token given.' },
+		});
 
-	const { error, data } = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const { data } = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!data?._id)
 		return res.status(401).json({
-			error: error.message,
-			message:
-				'Authorization failed. Access token is invalid or it has expired.',
+			success: false,
+			error: {
+				message:
+					'Authentication failed. Access token is invalid or it has expired.',
+			},
 		});
 
 	const user = await User.findOne({ _id: data._id });
 
 	if (!user)
-		return res
-			.status(401)
-			.json({ message: 'Authorization failed. There is no such user.' });
+		return res.status(401).json({
+			success: false,
+			error: { message: 'Authentication failed. There is no such user.' },
+		});
 
-	return res.status(200).json({ isAuthenticated: true });
+	return res.status(200).json({ success: true, error: null });
 };
 
 const signIn = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		const user = await User.signin(email, password);
+		const { _id } = await User.signin(email, password);
 
-		const { token, refreshToken } = createAccessToken(user._id);
+		const { token, refreshToken } = createAccessToken(_id);
 
-		return res
-			.status(200)
-			.cookie('token', token, { maxAge: 360000, httpOnly: true })
-			.json({ refreshToken });
+		return res.status(200).json({ success: true, token, refreshToken });
 	} catch (error) {
-		return res.status(400).json(error);
+		return res.status(400).json({ success: false, error });
 	}
 };
 
@@ -82,16 +89,13 @@ const signUp = async (req, res) => {
 	const { email, password, repeatPassword } = req.body;
 
 	try {
-		const user = await User.signup(email, password, repeatPassword);
+		const { _id } = await User.signup(email, password, repeatPassword);
 
-		const { token, refreshToken } = createAccessToken(user._id);
+		const { token, refreshToken } = createAccessToken(_id);
 
-		return res
-			.status(200)
-			.cookie('token', token, { maxAge: 360000, httpOnly: true })
-			.json({ refreshToken });
+		return res.status(200).json({ success: true, token, refreshToken });
 	} catch (error) {
-		return res.status(400).json(error);
+		return res.status(400).json({ success: false, error });
 	}
 };
 
@@ -99,26 +103,25 @@ const refresh = (req, res) => {
 	const { refreshToken: rfsh } = req.body;
 
 	if (!rfsh)
-		return res
-			.status(401)
-			.json({ message: 'Authorization failed. No refresh token given.' });
+		return res.status(401).json({
+			success: false,
+			error: { message: 'Authentication failed. No refresh token given.' },
+		});
 
-	const { error, data } = verifyToken(rfsh, process.env.REFRESH_TOKEN_SECRET);
+	const { data } = verifyToken(rfsh, process.env.REFRESH_TOKEN_SECRET);
 
 	if (!data?._id)
 		return res.status(401).json({
-			error: error.message,
-			message:
-				'Authorization failed. Refresh token is invalid or it has expired.',
+			success: false,
+			error: {
+				message:
+					'Authentication failed. Refresh token is invalid or it has expired.',
+			},
 		});
 
 	const { token, refreshToken } = createAccessToken(data._id);
 
-	return res
-		.status(200)
-		.clearCookie('token', { maxAge: 360000, httpOnly: true })
-		.cookie('token', token, { maxAge: 360000, httpOnly: true })
-		.json({ refreshToken });
+	return res.status(200).json({ success: true, token, refreshToken });
 };
 
 module.exports = {
