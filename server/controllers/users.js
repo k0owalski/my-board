@@ -58,7 +58,7 @@ const authenticate = async (req, res) => {
 			.status(401)
 			.json({ message: 'Authorization failed. There is no such user.' });
 
-	return res.status(200).send();
+	return res.status(200).json({ isAuthenticated: true });
 };
 
 const signIn = async (req, res) => {
