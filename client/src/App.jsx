@@ -20,7 +20,7 @@ const App = () => (
 
         <Route element={<Auth />}>
           <Route path="/" element={<Root />} />
-          <Route path="/boards/:id/:name" element={<Root />} />
+          <Route path="/boards/:name" element={<Root />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

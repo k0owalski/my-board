@@ -4,6 +4,7 @@ import useValidation from './useValidation';
 const API_AUTH = 'http://localhost:3072/api/auth/';
 const API_SIGN_IN = 'http://localhost:3072/api/auth/sign-in';
 const API_SIGN_UP = 'http://localhost:3072/api/auth/sign-up';
+const API_REFRESH = 'http://localhost:3072/api/auth/refresh';
 
 const useAuth = () => {
   const { getCookie } = useCookies();
@@ -88,6 +89,21 @@ const useAuth = () => {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({ email, password, repeatPassword }),
+      });
+
+      const { success, token, refreshToken, error } = await res.json();
+
+      return { success, token, refreshToken, error };
+    },
+    refreshToken: async () => {
+      const res = await fetch(API_REFRESH, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          refreshToken: localStorage.getItem('refreshToken'),
+        }),
       });
 
       const { success, token, refreshToken, error } = await res.json();

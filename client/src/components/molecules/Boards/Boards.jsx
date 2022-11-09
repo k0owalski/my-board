@@ -6,34 +6,37 @@ import { setBoards } from 'store/boards/boards.slice';
 
 import IconButton from 'components/atoms/IconButton/IconButton';
 
+import useBoards from 'utils/useBoards';
+
 import settingsIcon from 'assets/images/icon-settings.svg';
 import deleteIcon from 'assets/images/icon-delete.svg';
-
-import useBoardNameToURI from 'utils/useBoardNameToURI';
 
 import StyledBoards from './StyledBoards';
 
 const Boards = () => {
-  const {
-    boards: { items },
-  } = useSelector((state) => state);
+  const { boards } = useSelector((state) => state);
 
   const dispatch = useDispatch();
-  const getBoardURI = useBoardNameToURI();
+
+  const { getBoards, boardNameToURI } = useBoards();
 
   useEffect(() => {
-    if (!items) dispatch(setBoards());
+    getBoards()
+      .then(({ success, boards: boardItems }) => {
+        if (success) dispatch(setBoards(boardItems));
+      })
+      .catch();
   }, []);
 
   return (
     <StyledBoards>
-      {items?.map(({ id, name }) => (
-        <li className="board-name" key={id}>
+      {boards?.map(({ _id, name }) => (
+        <li className="board-name" key={_id}>
           <NavLink
             className={({ isActive }) =>
               isActive ? 'board-name-button is-active' : 'board-name-button'
             }
-            to={`/boards/${id}/${getBoardURI(name)}`}
+            to={`/boards/${boardNameToURI(name)}`}
           >
             {name}
           </NavLink>

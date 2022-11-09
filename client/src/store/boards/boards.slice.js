@@ -7,7 +7,7 @@ const boardsSlice = createSlice({
   name,
   initialState,
   reducers: {
-    setBoards: (state, payload) => ({ ...state, ...payload }),
+    setBoards: (_state, { payload }) => [...payload],
   },
 });
 

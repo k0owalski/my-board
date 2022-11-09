@@ -8,26 +8,33 @@ const verifyToken = require('../utils/verifyToken');
 const getBoards = async (req, res) => {
 	const token = getAccessToken(req.headers.authorization);
 
-	if (token) {
-		const userId = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	if (!token)
+		return res
+			.status(401)
+			.json({ success: false, error: { message: 'No access token given.' } });
 
-		if (!userId) {
-			res.status(400).send();
-			return;
-		}
+	const {
+		data: { _id },
+	} = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
-		try {
-			const boards = await Board.find({ 'users.id': userId });
+	if (!_id)
+		return res.status(401).json({
+			success: false,
+			error: { message: 'Access token is invalid or it has expired.' },
+		});
 
-			if (boards?.length)
-				res.status(200).json({
-					boards: boards.map((board) => ({ id: board.id, name: board.name })),
-				});
-			else res.status(400).send();
-		} catch (err) {
-			res.status(400).json(err);
-		}
-	} else res.status(400).send();
+	const boards = await Board.find({ 'users.id': _id }, 'name code tasks notes');
+
+	if (!boards?.length)
+		return res.status(400).json({
+			success: false,
+			error: { message: 'No boards assigned to your account.' },
+		});
+
+	return res.status(200).json({
+		success: true,
+		boards,
+	});
 };
 
 // create a new board
