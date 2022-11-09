@@ -1,11 +1,11 @@
 import IconButton from 'components/atoms/IconButton/IconButton';
 import ProfileButton from 'components/atoms/ProfileButton/ProfileButton';
+import Boards from 'components/molecules/Boards/Boards';
 
 import logoImg from 'assets/images/my-board-logo.svg';
 import notificationIcon from 'assets/images/icon-notification.svg';
 import chatIcon from 'assets/images/icon-chat.svg';
 
-import Boards from 'components/molecules/Boards/Boards';
 import StyledNavbar from './StyledNavbar';
 
 const Navbar = () => (

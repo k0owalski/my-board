@@ -4,8 +4,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Input from 'components/atoms/Input/Input';
 import Steps from 'components/atoms/Steps/Steps';
 
-import useSignUp from 'utils/useSignUp';
-import useValidation from 'utils/useValidation';
+import useAuth from 'utils/useAuth';
+import useCookies from 'utils/useCookies';
 
 import logo from 'assets/images/my-board-logo.svg';
 
@@ -22,8 +22,8 @@ const SignUpForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { validateEmail, validatePassword, validateRepeatedPassword } =
-    useValidation();
+  const { signUp } = useAuth();
+  const { setCookie } = useCookies();
 
   useEffect(() => {
     emailRef.current.classList.remove('is-invalid');
@@ -44,47 +44,23 @@ const SignUpForm = () => {
     const password = passwordRef.current.value;
     const repeatPassword = repeatPasswordRef.current.value;
 
-    if (currentStep === 0) {
-      if (!validateEmail(email)) {
-        setError({ field: 'email', message: 'Invalid email.' });
-        setCurrentStep(0);
-        return;
-      }
+    const {
+      success,
+      error: err,
+      nextStep,
+      token,
+      refreshToken,
+    } = await signUp(email, password, repeatPassword, currentStep);
 
-      setCurrentStep(1);
-      setError({ field: null, message: null });
-      return;
-    }
+    if (success) {
+      setCookie('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
 
-    if (!validateEmail(email)) {
-      setError({ field: 'email', message: 'Invalid email.' });
-      setCurrentStep(0);
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setError({
-        field: 'password',
-        message: 'Password is not strong enough.',
-      });
-      setCurrentStep(1);
-      return;
-    }
-
-    if (!validateRepeatedPassword(password, repeatPassword)) {
-      setError({
-        field: 'repeatPassword',
-        message: 'Passwords do not match.',
-      });
-      setCurrentStep(1);
-      return;
-    }
-
-    const err = await useSignUp(email, password, repeatPassword);
-
-    if (!err) {
       navigate('/', { replace: true, state: { from: location } });
-    } else setError(err);
+    } else {
+      setError(err);
+      setCurrentStep(nextStep);
+    }
   };
 
   return (

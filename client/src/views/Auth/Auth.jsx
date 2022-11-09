@@ -1,36 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 
-import { getUserData } from 'store/user/userSlice';
-import { getBoards } from 'store/boards/boardsSlice';
+import { setAuth } from 'store/auth/auth.slice';
+
+import Loading from 'views/Loading/Loading';
 
 import useAuth from 'utils/useAuth';
 
 const Auth = () => {
-  const { user, boards } = useSelector((state) => state);
-  const dispatch = useDispatch();
+  const { isAuth } = useSelector((state) => state.auth);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
+
+  const { checkAuth } = useAuth();
 
   useEffect(() => {
-    const auth = async () => {
-      const isAuth = await useAuth();
-
-      if (!isAuth) {
-        navigate('/sign-in', { replace: true, state: { from: location } });
-        return;
-      }
-
-      if (!user || !user?.id) dispatch(getUserData());
-      if (!boards || boards?.length === 0) dispatch(getBoards());
-    };
-
-    auth();
+    checkAuth()
+      .then(({ success }) => {
+        dispatch(setAuth(success));
+        setIsLoading(false);
+      })
+      .catch();
   }, []);
 
-  return <Outlet />;
+  if (isLoading) return <Loading />;
+
+  return isAuth ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/sign-in" state={{ from: location }} replace />
+  );
 };
 
 export default Auth;

@@ -4,8 +4,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import Input from 'components/atoms/Input/Input';
 
-import useSignIn from 'utils/useSignIn';
-import useValidation from 'utils/useValidation';
+import useAuth from 'utils/useAuth';
+import useCookies from 'utils/useCookies';
 
 import logo from 'assets/images/my-board-logo.svg';
 
@@ -20,7 +20,8 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { validateEmail, validatePassword } = useValidation();
+  const { signIn } = useAuth();
+  const { setCookie } = useCookies();
 
   useEffect(() => {
     emailRef.current.classList.remove('is-invalid');
@@ -37,14 +38,17 @@ const SignInForm = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (!validateEmail(email) || !validatePassword(password)) {
-      setError({ field: null, message: 'Invalid email or password.' });
-      return;
-    }
+    const {
+      success,
+      token,
+      refreshToken,
+      error: err,
+    } = await signIn(email, password);
 
-    const err = await useSignIn(email, password);
+    if (success) {
+      setCookie('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
 
-    if (!err) {
       navigate('/', { replace: true, state: { from: location } });
     } else setError(err);
   };

@@ -1,4 +1,8 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+
+import { setBoards } from 'store/boards/boards.slice';
 
 import IconButton from 'components/atoms/IconButton/IconButton';
 
@@ -10,17 +14,20 @@ import useBoardNameToURI from 'utils/useBoardNameToURI';
 import StyledBoards from './StyledBoards';
 
 const Boards = () => {
-  const boardArr = [
-    { id: 79837123, name: 'My first created board' },
-    { id: 29350120, name: 'My second board' },
-    { id: 54251955, name: 'And the third one' },
-  ];
+  const {
+    boards: { items },
+  } = useSelector((state) => state);
 
+  const dispatch = useDispatch();
   const getBoardURI = useBoardNameToURI();
+
+  useEffect(() => {
+    if (!items) dispatch(setBoards());
+  }, []);
 
   return (
     <StyledBoards>
-      {boardArr.map(({ id, name }) => (
+      {items?.map(({ id, name }) => (
         <li className="board-name" key={id}>
           <NavLink
             className={({ isActive }) =>
