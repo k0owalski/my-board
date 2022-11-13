@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const generateBoardCode = require('../utils/generateBoardCode');
 
 const note = new mongoose.Schema(
 	{
@@ -42,6 +43,17 @@ const boardSchema = new mongoose.Schema(
 	{ timestamps: true }
 );
 
-// boardSchema.statics.methodName
+boardSchema.statics.generateCode = async function () {
+	let code = '';
+	let isUnique = false;
+
+	do {
+		code = generateBoardCode();
+
+		isUnique = await this.findOne({ code }, {});
+	} while (!!isUnique === false);
+
+	return code;
+};
 
 module.exports = mongoose.model('Board', boardSchema);
