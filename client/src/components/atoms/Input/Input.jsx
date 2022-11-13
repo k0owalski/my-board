@@ -4,9 +4,11 @@ import StyledInput from './StyledInput';
 const Input = ({ inputId, inputRef, label, type }) => {
   return (
     <StyledInput>
-      <label className="label" htmlFor={inputId}>
-        {label}
-      </label>
+      {label ? (
+        <label className="label" htmlFor={inputId}>
+          {label}
+        </label>
+      ) : null}
       <input
         ref={inputRef}
         className="input"
@@ -20,7 +22,7 @@ const Input = ({ inputId, inputRef, label, type }) => {
 
 Input.propTypes = {
   inputId: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   inputRef: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
@@ -29,6 +31,7 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
+  label: null,
   type: 'text',
 };
 
