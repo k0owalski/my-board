@@ -12,9 +12,7 @@ const getBoards = async (req, res) => {
 			.status(401)
 			.json({ success: false, error: { message: 'No access token given.' } });
 
-	const {
-		data: { _id },
-	} = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!_id)
 		return res.status(401).json({
@@ -44,9 +42,7 @@ const createBoard = async (req, res) => {
 			.status(401)
 			.json({ success: false, error: { message: 'No access token given.' } });
 
-	const {
-		data: { _id },
-	} = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!_id)
 		return res.status(401).json({
@@ -68,9 +64,9 @@ const createBoard = async (req, res) => {
 		name,
 		code,
 		users: [{ id: _id, roles: ['Admin'] }],
-		tasks: [],
-		notes: [],
 	});
+
+	console.log(board);
 
 	if (!board)
 		return res.status(400).json({
@@ -91,9 +87,7 @@ const joinBoard = async (req, res) => {
 			.status(401)
 			.json({ success: false, error: { message: 'No access token given.' } });
 
-	const {
-		data: { _id },
-	} = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!_id)
 		return res.status(401).json({
@@ -133,9 +127,7 @@ const deleteBoard = async (req, res) => {
 			.status(401)
 			.json({ success: false, error: { message: 'No access token given.' } });
 
-	const {
-		data: { _id },
-	} = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
 	if (!_id)
 		return res.status(401).json({

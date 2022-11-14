@@ -29,14 +29,12 @@ const boardSchema = new mongoose.Schema(
 				id: {
 					type: mongoose.Schema.Types.ObjectId,
 					required: true,
-					unique: true,
 				},
 				roles: [String],
 			},
 		],
 		tasks: {
 			type: [mongoose.Schema.Types.ObjectId],
-			unique: true,
 		},
 		notes: [note],
 	},
@@ -50,8 +48,8 @@ boardSchema.statics.generateCode = async function () {
 	do {
 		code = generateBoardCode();
 
-		isUnique = await this.findOne({ code }, {});
-	} while (!!isUnique === false);
+		isUnique = await this.findOne({ code });
+	} while (isUnique);
 
 	return code;
 };

@@ -13,9 +13,9 @@ const authenticate = async (req, res) => {
 			error: { message: 'Authentication failed. No access token given.' },
 		});
 
-	const { data } = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+	const _id = verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
-	if (!data?._id)
+	if (!_id)
 		return res.status(401).json({
 			success: false,
 			error: {
@@ -24,7 +24,7 @@ const authenticate = async (req, res) => {
 			},
 		});
 
-	const user = await User.findOne({ _id: data._id });
+	const user = await User.findOne({ _id });
 
 	if (!user)
 		return res.status(401).json({
@@ -72,9 +72,9 @@ const refresh = (req, res) => {
 			error: { message: 'Authentication failed. No refresh token given.' },
 		});
 
-	const { data } = verifyToken(rfsh, process.env.REFRESH_TOKEN_SECRET);
+	const _id = verifyToken(rfsh, process.env.REFRESH_TOKEN_SECRET);
 
-	if (!data?._id)
+	if (!_id)
 		return res.status(401).json({
 			success: false,
 			error: {
@@ -83,7 +83,7 @@ const refresh = (req, res) => {
 			},
 		});
 
-	const { token, refreshToken } = createAccessToken(data._id);
+	const { token, refreshToken } = createAccessToken(_id);
 
 	return res.status(200).json({ success: true, token, refreshToken });
 };
