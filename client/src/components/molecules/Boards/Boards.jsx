@@ -9,7 +9,6 @@ import IconButton from 'components/atoms/IconButton/IconButton';
 import useBoards from 'utils/useBoards';
 
 import settingsIcon from 'assets/images/icon-settings.svg';
-import deleteIcon from 'assets/images/icon-delete.svg';
 
 import StyledBoards from './StyledBoards';
 
@@ -36,13 +35,16 @@ const Boards = () => {
             className={({ isActive }) =>
               isActive ? 'board-name-button is-active' : 'board-name-button'
             }
-            to={`/boards/${boardNameToURI(name)}`}
+            to={`/boards/${_id}/${boardNameToURI(name)}`}
           >
             {name}
           </NavLink>
           <div className="controlls">
-            <IconButton icon={settingsIcon} size="small" />
-            <IconButton icon={deleteIcon} size="small" />
+            <IconButton
+              path={`/boards/${_id}/${boardNameToURI(name)}/settings`}
+              icon={settingsIcon}
+              size="small"
+            />
           </div>
         </li>
       ))}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import StyledProfileButton from './StyledProfileButton';
 
 const ProfileButton = ({ username }) => (
-  <StyledProfileButton>
+  <StyledProfileButton to="/users/me">
     <span className="username">{username}</span>
   </StyledProfileButton>
 );

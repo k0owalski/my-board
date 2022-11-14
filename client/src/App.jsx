@@ -20,7 +20,12 @@ const App = () => (
 
         <Route element={<Auth />}>
           <Route path="/" element={<Root />} />
-          <Route path="/boards/:name" element={<Root />} />
+          <Route path="/boards/:id/:name">
+            <Route index element={<Root />} />
+            <Route path="tasks" element={<Root />} />
+            <Route path="notes" element={<Root />} />
+            <Route path="settings" element={<Root />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

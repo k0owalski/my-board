@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setCreateBoardVisible, setJoinBoardVisible } from 'store/ui/ui.slice';
@@ -5,7 +6,7 @@ import { setCreateBoardVisible, setJoinBoardVisible } from 'store/ui/ui.slice';
 import IconButton from 'components/atoms/IconButton/IconButton';
 import ProfileButton from 'components/atoms/ProfileButton/ProfileButton';
 import Boards from 'components/molecules/Boards/Boards';
-import AddBoard from 'components/atoms/AddBoard/AddBoard';
+import AddBoard from 'components/molecules/AddBoard/AddBoard';
 
 import logoImg from 'assets/images/my-board-logo.svg';
 import notificationIcon from 'assets/images/icon-notification.svg';
@@ -26,7 +27,9 @@ const Navbar = () => {
   return (
     <>
       <StyledNavbar>
-        <img src={logoImg} alt="myBoard logo" className="logo" />
+        <Link to="/">
+          <img src={logoImg} alt="myBoard logo" className="logo" />
+        </Link>
         <div className="nav-buttons">
           <button className="button" type="button" onClick={showJoinModal}>
             Join a board

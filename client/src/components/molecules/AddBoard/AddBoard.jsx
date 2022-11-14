@@ -1,35 +1,62 @@
+import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ModalActions from 'components/molecules/ModalActions/ModalActions';
 
+import useBoards from 'utils/useBoards';
+
 import Modal from 'templates/Modal/Modal';
 
 import { setCreateBoardVisible, setJoinBoardVisible } from 'store/ui/ui.slice';
+import { setBoards } from 'store/boards/boards.slice';
+
 import StyledAddBoard from './StyledAddBoard';
 
 const AddBoard = ({ title, action }) => {
+  const ref = useRef();
+
   const dispatch = useDispatch();
+  const { getBoards, createBoard, joinBoard } = useBoards();
 
   const handleCreateCancel = () => dispatch(setCreateBoardVisible(false));
 
   const handleJoinCancel = () => dispatch(setJoinBoardVisible(false));
 
-  const handleCreate = () => null;
+  const handleCreate = async () => {
+    const { success } = await createBoard(ref.current.value);
 
-  const handleJoin = () => null;
+    if (!success) return;
+
+    getBoards()
+      .then(({ success: scs, boards: boardItems }) => {
+        if (scs) dispatch(setBoards(boardItems));
+      })
+      .catch();
+
+    dispatch(setCreateBoardVisible(false));
+  };
+
+  const handleJoin = async () => {
+    const { success } = await joinBoard(ref.current.value);
+
+    if (!success) return;
+
+    getBoards()
+      .then(({ success: scs, boards: boardItems }) => {
+        if (scs) dispatch(setBoards(boardItems));
+      })
+      .catch();
+
+    dispatch(setJoinBoardVisible(false));
+  };
 
   return (
     <Modal>
       <StyledAddBoard>
         <div className="main">
           <span className="title">{title}</span>
-          <input
-            className="input"
-            name="boardname"
-            id="boardname"
-            placeholder="My new board"
-          />
+          <input className="input" name="boardname" id="boardname" ref={ref} />
         </div>
         <ModalActions
           handleSuccess={action === 'create' ? handleCreate : handleJoin}

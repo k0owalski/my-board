@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-const StyledIconButton = styled.button`
+const StyledIconButton = styled(Link)`
   width: 1.5rem;
   height: 1.5rem;
 
