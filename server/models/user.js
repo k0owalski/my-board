@@ -38,46 +38,92 @@ const userSchema = new mongoose.Schema(
 
 userSchema.statics.signup = async function (email, password, repeatPassword) {
 	if (!email || !password || !repeatPassword)
-		throw new validate.exception(null, 'All fields have to be filled.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: null, message: 'All fields have to be filled.' },
+		};
 
 	if (!validate.isEmail(email))
-		throw new validate.exception('email', 'Invalid email.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: 'email', message: 'Invalid email.' },
+		};
 
 	if (!validate.isPassword(password))
-		throw new validate.exception('password', 'Password is not strong enough.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: 'password', message: 'Password is not strong enough.' },
+		};
 
 	if (!validate.arePasswordsDifferent(password, repeatPassword))
-		throw new validate.exception('repeatPassword', 'Passwords do not match.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: 'repeatPassword', message: "Password don't match." },
+		};
 
-	const exists = await this.findOne({ email }, {});
+	const doesExist = await this.findOne({ email }, {});
 
-	if (exists) throw new validate.exception('email', 'Email is already in use.');
+	if (doesExist)
+		return {
+			success: false,
+			_id: null,
+			error: { field: 'email', message: 'Email is already in use.' },
+		};
 
 	const salt = await bcrypt.genSalt();
 	const hash = await bcrypt.hash(password, salt);
 
 	const user = await this.create({ email, password: hash });
 
-	return user;
+	return {
+		success: true,
+		_id: user._id,
+		error: null,
+	};
 };
 
 userSchema.statics.signin = async function (email, password) {
 	if (!email || !password)
-		throw new validate.exception(null, 'All fields have to be filled.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: null, message: 'All fields have to be filled.' },
+		};
 
 	if (!validate.isEmail(email) || !validate.isPassword(password))
-		throw new validate.exception(null, 'Invalid email or password.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: null, message: 'Invalid email or password.' },
+		};
 
-	const user = await this.findOne({ email }, {});
+	const user = await this.findOne({ email });
 
-	if (!user) throw new validate.exception(null, 'Invalid email or password.');
+	if (!user)
+		return {
+			success: false,
+			_id: null,
+			error: { field: null, message: 'Invalid email or password.' },
+		};
 
 	const doPasswordsMatch = await bcrypt.compare(password, user.password);
 
 	if (!doPasswordsMatch)
-		throw new validate.exception(null, 'Invalid email or password.');
+		return {
+			success: false,
+			_id: null,
+			error: { field: null, message: 'Invalid email or password.' },
+		};
 
-	return user;
+	return {
+		success: true,
+		_id: user._id,
+		error: null,
+	};
 };
 
 module.exports = mongoose.model('User', userSchema);
