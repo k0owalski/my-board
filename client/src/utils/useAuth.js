@@ -17,7 +17,7 @@ const useAuth = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${getCookie('token')}`,
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
       });
 
@@ -36,13 +36,14 @@ const useAuth = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({ email, password }),
       });
 
-      const { success, token, refreshToken, error } = await res.json();
+      const { success, accessToken, refreshToken, error } = await res.json();
 
-      return { success, token, refreshToken, error };
+      return { success, accessToken, refreshToken, error };
     },
     signUp: async (email, password, repeatPassword, currentStep = 0) => {
       if (currentStep === 0) {
@@ -87,28 +88,30 @@ const useAuth = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({ email, password, repeatPassword }),
       });
 
-      const { success, token, refreshToken, error } = await res.json();
+      const { success, accessToken, refreshToken, error } = await res.json();
 
-      return { success, token, refreshToken, error };
+      return { success, accessToken, refreshToken, error };
     },
     refreshToken: async () => {
       const res = await fetch(API_REFRESH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({
           refreshToken: localStorage.getItem('refreshToken'),
         }),
       });
 
-      const { success, token, refreshToken, error } = await res.json();
+      const { success, accessToken, refreshToken, error } = await res.json();
 
-      return { success, token, refreshToken, error };
+      return { success, accessToken, refreshToken, error };
     },
   };
 };

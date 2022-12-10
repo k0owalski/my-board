@@ -2,8 +2,6 @@ import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ModalActions from 'components/molecules/ModalActions/ModalActions';
-
 import useBoards from 'utils/useBoards';
 
 import Modal from 'templates/Modal/Modal';
@@ -52,18 +50,18 @@ const AddBoard = ({ title, action }) => {
   };
 
   return (
-    <Modal>
+    <Modal
+      successLabel="OK"
+      cancelLabel="Cancel"
+      handleSuccess={action === 'create' ? handleCreate : handleJoin}
+      handleCancel={action === 'create' ? handleCreateCancel : handleJoinCancel}
+      actions
+    >
       <StyledAddBoard>
         <div className="main">
           <span className="title">{title}</span>
           <input className="input" name="boardname" id="boardname" ref={ref} />
         </div>
-        <ModalActions
-          handleSuccess={action === 'create' ? handleCreate : handleJoin}
-          handleCancel={
-            action === 'create' ? handleCreateCancel : handleJoinCancel
-          }
-        />
       </StyledAddBoard>
     </Modal>
   );

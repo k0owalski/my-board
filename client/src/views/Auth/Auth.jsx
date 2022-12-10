@@ -21,26 +21,34 @@ const Auth = () => {
   const { setCookie } = useCookies();
 
   useEffect(() => {
+    let isCanceled = false;
+
     checkAuth()
       .then(({ success }) => {
-        if (success) {
-          dispatch(setAuth(success));
-          setIsLoading(false);
-        } else {
-          refreshToken()
-            .then(({ success: sccss, token, refreshToken: rfs }) => {
-              if (sccss) {
-                setCookie('token', token);
-                localStorage.setItem('refreshToken', rfs);
-              }
+        if (!isCanceled) {
+          if (success) {
+            dispatch(setAuth(success));
+            setIsLoading(false);
+          } else {
+            refreshToken()
+              .then(({ success: sccss, accessToken, refreshToken: rfs }) => {
+                if (sccss) {
+                  setCookie('accessToken', accessToken);
+                  localStorage.setItem('refreshToken', rfs);
+                }
 
-              dispatch(setAuth(sccss));
-              setIsLoading(false);
-            })
-            .catch();
+                dispatch(setAuth(sccss));
+                setIsLoading(false);
+              })
+              .catch();
+          }
         }
       })
       .catch();
+
+    return () => {
+      isCanceled = true;
+    };
   }, []);
 
   if (isLoading) return <Loading />;

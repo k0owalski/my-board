@@ -48,12 +48,12 @@ const SignUpForm = () => {
       success,
       error: err,
       nextStep,
-      token,
+      accessToken,
       refreshToken,
     } = await signUp(email, password, repeatPassword, currentStep);
 
     if (success) {
-      setCookie('token', token);
+      setCookie('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
       navigate('/', { replace: true, state: { from: location } });

@@ -1,8 +1,6 @@
 const User = require('../models/user');
 const Board = require('../models/board');
 
-const verifyToken = require('../utils/verifyToken');
-
 const getBoards = async (req, res) => {
 	const { authId } = req;
 

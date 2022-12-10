@@ -1,10 +1,23 @@
-import StyledSignUp from 'views/SignUp/StyledSignUp';
+import { useSelector } from 'react-redux';
+
+import Info from 'components/atoms/Info/Info';
 import Form from 'components/organisms/SignUpForm/SignUpForm';
 
-const SignUp = () => (
-  <StyledSignUp>
-    <Form />
-  </StyledSignUp>
-);
+import StyledSignUp from 'views/SignUp/StyledSignUp';
+
+const SignUp = () => {
+  const { info } = useSelector((state) => state.ui);
+
+  return (
+    <StyledSignUp>
+      <Form />
+      <Info
+        message={info.message}
+        variant={info.variant}
+        isActive={info.isVisible}
+      />
+    </StyledSignUp>
+  );
+};
 
 export default SignUp;

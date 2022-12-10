@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import Input from 'components/atoms/Input/Input';
 
@@ -9,28 +10,20 @@ import useCookies from 'utils/useCookies';
 
 import logo from 'assets/images/my-board-logo.svg';
 
+import { setInfo } from 'store/ui/ui.slice';
+
 import StyledForm from './StyledSignInForm';
 
 const SignInForm = () => {
-  const [error, setError] = useState({ field: null, message: null });
-
   const emailRef = useRef();
   const passwordRef = useRef();
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const { signIn } = useAuth();
   const { setCookie } = useCookies();
-
-  useEffect(() => {
-    emailRef.current.classList.remove('is-invalid');
-    passwordRef.current.classList.remove('is-invalid');
-
-    if (error.field === 'email') emailRef.current.classList.add('is-invalid');
-    else if (error.field === 'password')
-      passwordRef.current.classList.add('is-invalid');
-  }, [error]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,26 +31,25 @@ const SignInForm = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    const {
-      success,
-      token,
-      refreshToken,
-      error: err,
-    } = await signIn(email, password);
+    const { success, accessToken, refreshToken, error } = await signIn(
+      email,
+      password
+    );
 
     if (success) {
-      setCookie('token', token);
+      setCookie('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
+      dispatch(setInfo({ isVisible: false, message: '', variant: 'info' }));
       navigate('/', { replace: true, state: { from: location } });
-    } else setError(err);
+    } else
+      dispatch(
+        setInfo({ isVisible: true, message: error.message, variant: 'error' })
+      );
   };
 
   return (
     <StyledForm>
-      <div className={`error ${error.message ? 'is-active' : null}`}>
-        {error.message}
-      </div>
       <form className="form" onSubmit={handleSubmit}>
         <img className="logo" src={logo} alt="myBoard" />
 

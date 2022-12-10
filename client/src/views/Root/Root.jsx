@@ -1,5 +1,5 @@
-import Navbar from 'components/organisms/Navbar/Navbar';
+import RootTemplate from 'templates/Root/Root';
 
-const Root = () => <Navbar />;
+const Root = () => <RootTemplate />;
 
 export default Root;

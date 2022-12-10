@@ -10,7 +10,6 @@ import AddBoard from 'components/molecules/AddBoard/AddBoard';
 
 import logoImg from 'assets/images/my-board-logo.svg';
 import notificationIcon from 'assets/images/icon-notification.svg';
-import chatIcon from 'assets/images/icon-chat.svg';
 
 import StyledNavbar from './StyledNavbar';
 
@@ -50,7 +49,6 @@ const Navbar = () => {
           <ProfileButton username="Konrad" />
           <div className="notification-wrapper">
             <IconButton icon={notificationIcon} variant="notification" />
-            <IconButton icon={chatIcon} variant="notification" />
           </div>
         </div>
         <span className="copyright">

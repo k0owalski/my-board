@@ -13,7 +13,7 @@ const useBoards = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${getCookie('token')}`,
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
       });
 
@@ -26,7 +26,7 @@ const useBoards = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${getCookie('token')}`,
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({ name }),
       });
@@ -40,7 +40,7 @@ const useBoards = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${getCookie('token')}`,
+          Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({ code }),
       });

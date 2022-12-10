@@ -4,6 +4,11 @@ const name = 'ui';
 const initialState = {
   createBoardVisible: false,
   joinBoardVisible: false,
+  info: {
+    isVisible: false,
+    message: '',
+    variant: 'info',
+  },
 };
 
 const uiSlice = createSlice({
@@ -18,9 +23,14 @@ const uiSlice = createSlice({
       ...state,
       joinBoardVisible: payload,
     }),
+    setInfo: (state, { payload }) => ({
+      ...state,
+      info: { ...state.info, ...payload },
+    }),
   },
 });
 
-export const { setCreateBoardVisible, setJoinBoardVisible } = uiSlice.actions;
+export const { setCreateBoardVisible, setJoinBoardVisible, setInfo } =
+  uiSlice.actions;
 
 export default uiSlice.reducer;
