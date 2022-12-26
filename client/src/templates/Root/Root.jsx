@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import Info from 'components/atoms/Info/Info';
+import CreateBoardModal from 'components/molecules/CreateBoardModal/CreateBoardModal';
+import JoinBoardModal from 'components/molecules/JoinBoardModal/JoinBoardModal';
 import Navbar from 'components/organisms/Navbar/Navbar';
 
 const Root = ({ children }) => {
-  const { info } = useSelector((state) => state.ui);
+  const { info, createBoard, joinBoard } = useSelector((state) => state.ui);
 
   return (
     <>
@@ -16,6 +18,8 @@ const Root = ({ children }) => {
         message={info.message}
         variant={info.variant}
       />
+      {createBoard.isVisible ? <CreateBoardModal /> : null}
+      {joinBoard.isVisible ? <JoinBoardModal /> : null}
     </>
   );
 };

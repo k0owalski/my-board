@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledAddBoard = styled.div`
+const StyledCreateBoardModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -32,4 +32,4 @@ const StyledAddBoard = styled.div`
   }
 `;
 
-export default StyledAddBoard;
+export default StyledCreateBoardModal;

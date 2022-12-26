@@ -2,8 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const name = 'ui';
 const initialState = {
-  createBoardVisible: false,
-  joinBoardVisible: false,
+  createBoard: {
+    isVisible: false,
+  },
+  joinBoard: {
+    isVisible: false,
+  },
   info: {
     isVisible: false,
     message: '',
@@ -15,13 +19,13 @@ const uiSlice = createSlice({
   name,
   initialState,
   reducers: {
-    setCreateBoardVisible: (state, { payload }) => ({
+    setCreateBoard: (state, { payload }) => ({
       ...state,
-      createBoardVisible: payload,
+      createBoard: { ...state.createBoard, ...payload },
     }),
-    setJoinBoardVisible: (state, { payload }) => ({
+    setJoinBoard: (state, { payload }) => ({
       ...state,
-      joinBoardVisible: payload,
+      joinBoard: { ...state.joinBoard, ...payload },
     }),
     setInfo: (state, { payload }) => ({
       ...state,
@@ -30,7 +34,6 @@ const uiSlice = createSlice({
   },
 });
 
-export const { setCreateBoardVisible, setJoinBoardVisible, setInfo } =
-  uiSlice.actions;
+export const { setCreateBoard, setJoinBoard, setInfo } = uiSlice.actions;
 
 export default uiSlice.reducer;
