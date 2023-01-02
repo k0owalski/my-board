@@ -1,22 +1,27 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setInfo } from 'store/ui/ui.slice';
 
 import StyledInfo from './StyledInfo';
 
-const Info = ({ message, variant, isActive }) => (
-  <StyledInfo variant={variant} isActive={isActive}>
-    <span className="message">{message}</span>
-  </StyledInfo>
-);
+const Info = () => {
+  const { info } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
 
-Info.propTypes = {
-  message: PropTypes.string.isRequired,
-  variant: PropTypes.string,
-  isActive: PropTypes.bool,
-};
+  const handleAnimationEnd = (event) => {
+    if (event.animationName === 'slideOut')
+      dispatch(setInfo({ isVisible: false, message: '', variant: 'info' }));
+  };
 
-Info.defaultProps = {
-  variant: 'info',
-  isActive: false,
+  return (
+    <StyledInfo
+      variant={info.variant}
+      isActive={info.isVisible}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <span className="message">{info.message}</span>
+    </StyledInfo>
+  );
 };
 
 export default Info;

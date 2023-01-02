@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 

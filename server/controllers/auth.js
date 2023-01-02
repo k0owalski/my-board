@@ -36,21 +36,23 @@ const signIn = async (req, res) => {
 const signUp = async (req, res) => {
 	const { email, password, repeatPassword } = req.body;
 
-	try {
-		const { success, _id, error } = await User.signup(
-			email,
-			password,
-			repeatPassword
-		);
+	// try {
+	const { success, _id, error } = await User.signup(
+		email,
+		password,
+		repeatPassword
+	);
 
-		if (!success) return res.status(200).json({ success: false, error });
+	// 	if (!success) return res.status(200).json({ success: false, error });
 
-		const { accessToken, refreshToken } = createAccessToken(_id);
+	// 	const { accessToken, refreshToken } = createAccessToken(_id);
 
-		return res.status(200).json({ success: true, accessToken, refreshToken });
-	} catch {
-		return res.status(400).json({ success: false });
-	}
+	// 	return res.status(200).json({ success: true, accessToken, refreshToken });
+	// } catch {
+	// 	return res.status(400).json({ success: false });
+	// }
+
+	return res.status(200).json({ success, _id, error });
 };
 
 const refresh = (req, res) => {
