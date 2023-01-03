@@ -9,7 +9,7 @@ const authenticate = async (req, res) => {
 	const user = await User.findOne({ _id: authId });
 
 	if (!user)
-		return res.status(200).json({
+		return res.status(401).json({
 			success: false,
 			error: { message: 'Authentication failed. There is no such user.' },
 		});
@@ -23,7 +23,7 @@ const signIn = async (req, res) => {
 	try {
 		const { success, _id, error } = await User.signin(email, password);
 
-		if (!success) return res.status(200).json({ success: false, error });
+		if (!success) return res.status(400).json({ success: false, error });
 
 		const { accessToken, refreshToken } = createAccessToken(_id);
 
@@ -36,23 +36,17 @@ const signIn = async (req, res) => {
 const signUp = async (req, res) => {
 	const { email, password, repeatPassword } = req.body;
 
-	// try {
 	const { success, _id, error } = await User.signup(
 		email,
 		password,
 		repeatPassword
 	);
 
-	// 	if (!success) return res.status(200).json({ success: false, error });
+	if (!success) return res.status(400).json({ success: false, error });
 
-	// 	const { accessToken, refreshToken } = createAccessToken(_id);
+	const { accessToken, refreshToken } = createAccessToken(_id);
 
-	// 	return res.status(200).json({ success: true, accessToken, refreshToken });
-	// } catch {
-	// 	return res.status(400).json({ success: false });
-	// }
-
-	return res.status(200).json({ success, _id, error });
+	return res.status(200).json({ success: true, accessToken, refreshToken });
 };
 
 const refresh = (req, res) => {

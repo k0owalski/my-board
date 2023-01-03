@@ -13,7 +13,7 @@ const Info = () => {
       dispatch(setInfo({ isVisible: false, message: '', variant: 'info' }));
   };
 
-  return (
+  return info.isVisible ? (
     <StyledInfo
       variant={info.variant}
       isActive={info.isVisible}
@@ -21,7 +21,7 @@ const Info = () => {
     >
       <span className="message">{info.message}</span>
     </StyledInfo>
-  );
+  ) : null;
 };
 
 export default Info;
