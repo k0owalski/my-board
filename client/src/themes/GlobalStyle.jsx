@@ -36,6 +36,8 @@ const GlobalStyle = createGlobalStyle`
     --color-background: 244, 244, 244;
     --color-error: 203, 26, 50;
     --color-accept: 26, 203, 97;
+
+    --color-task-flag-1: 64, 192, 128;
   }
 
   html {
